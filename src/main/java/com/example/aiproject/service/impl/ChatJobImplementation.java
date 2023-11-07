@@ -1,9 +1,11 @@
-package com.example.aiproject.service;
+package com.example.aiproject.service.impl;
 
 import com.example.aiproject.dto.ChatRequest;
 import com.example.aiproject.dto.ChatResponse;
 import com.example.aiproject.dto.Message;
-import org.springframework.beans.factory.annotation.Qualifier;
+import com.example.aiproject.entity.ChatApplicationResponse;
+import com.example.aiproject.repository.ChatRepository;
+import com.example.aiproject.service.ChatJobImplementationService;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ChatJobImplementation {
+public class ChatJobImplementation implements ChatJobImplementationService {
         private final String model = "gpt-3.5-turbo";
         private final double temperature = 0.8;
         private final int maxTokens = 500;
@@ -22,9 +24,11 @@ public class ChatJobImplementation {
         private final double presencePenalty= 0.0;
 
         private WebClient webClient;
+        private ChatRepository chatRepository;
 
-        public ChatJobImplementation(WebClient.Builder builder) {
+        public ChatJobImplementation(WebClient.Builder builder, ChatRepository chatRepository) {
             this.webClient = builder.build();
+            this.chatRepository = chatRepository;
         }
 
         public ChatRequest setupChatRequest() {
@@ -60,22 +64,22 @@ public class ChatJobImplementation {
                     .bodyToMono(ChatResponse.class);
         }
 
-//        public Mono<ChatResponse> chatResponse() {
-//            return fetchChatResponse().map(response -> {
-//                ChatResponse chatResponse = new ChatResponse();
-//                chatResponse.setAnswer(response.getChoices().get(0).getMessage().getContent());
-//                chatResponse.setPromptTokens(response.getUsage().getPromptTokens());
-//                chatResponse.setCompletionTokens(response.getUsage().getCompletionTokens());
-//                chatResponse.setTotalTokens(response.getUsage().getTotalTokens());
-//
-//                persistData(chatResponse);
-//
-//                return chatResponse;
-//            });
-//        }
+        public Mono<ChatApplicationResponse> chatApplicationResponse() {
+            return fetchChatResponse().map(response -> {
+                ChatApplicationResponse chatApplication = new ChatApplicationResponse();
+                chatApplication.setAnswer(response.getChoices().get(0).getMessage().getContent());
+                chatApplication.setPromptTokens(response.getUsage().getPromptTokens());
+                chatApplication.setCompletionTokens(response.getUsage().getCompletionTokens());
+                chatApplication.setTotalTokens(response.getUsage().getTotalTokens());
+
+                persistData(chatApplication);
+
+                return chatApplication;
+            });
+        }
 
 
-//        public void persistData(ChatResponse response) {
-//            chatRepository.save(response);
-//        }
+        public void persistData(ChatApplicationResponse response) {
+            chatRepository.save(response);
+        }
 }
