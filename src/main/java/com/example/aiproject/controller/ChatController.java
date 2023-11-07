@@ -5,10 +5,11 @@ import com.example.aiproject.entity.ChatApplicationResponse;
 import com.example.aiproject.service.ChatJobImplementationService;
 import com.example.aiproject.service.impl.ChatJobImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -24,8 +25,14 @@ public class ChatController {
         return chatService.fetchChatResponse();
     }
 
-    @GetMapping("/chatresponse")
+/*    @GetMapping("/chatresponse")
     public Mono<ChatApplicationResponse> getChatResponse(){
+        return chatService.chatApplicationResponse();
+    }*/
+
+    @PostMapping("/chatresponse")
+    public Mono<ChatApplicationResponse> getChatResponseFromList(@RequestBody List<String> content){
+        chatService.setUserContent(content);
         return chatService.chatApplicationResponse();
     }
 

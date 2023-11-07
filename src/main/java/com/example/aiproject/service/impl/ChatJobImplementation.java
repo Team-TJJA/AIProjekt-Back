@@ -25,25 +25,23 @@ public class ChatJobImplementation implements ChatJobImplementationService {
 
         private WebClient webClient;
         private ChatRepository chatRepository;
+        private List<Message> messages = new ArrayList<>();
 
         public ChatJobImplementation(WebClient.Builder builder, ChatRepository chatRepository) {
             this.webClient = builder.build();
             this.chatRepository = chatRepository;
         }
 
+        public void setUserContent(List<String> userContent) {
+            this.messages.clear();
+            messages.add(new Message("system", "You are a helpful assistant that can take one to multiple user input and combine them to one joke "));
+            userContent.forEach(content -> messages.add(new Message("user", content)));
+        }
+
         public ChatRequest setupChatRequest() {
             ChatRequest chatRequest = new ChatRequest();
             chatRequest.setModel(model);
-
-            List<Message> list = new ArrayList<>();
-
-            list.add(new Message("system", "You are a helpful assistant that only provides jokes from user input"));
-            list.add(new Message("user", "teacher"));
-
-            chatRequest.setMessages(list);
-            System.out.println(list);
-
-
+            chatRequest.setMessages(messages);
             chatRequest.setTemperature(temperature);
             chatRequest.setMaxTokens(maxTokens);
             chatRequest.setTopP(topP);
