@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 public class ChatJobImplementation implements ChatJobImplementationService {
         private final String model = "gpt-3.5-turbo";
-        private final double temperature = 0.8;
+        private final double temperature = 1;
         private final int maxTokens = 500;
         private final double topP = 1.0;
         private final double frequencyPenalty= 0.0;
@@ -35,7 +35,8 @@ public class ChatJobImplementation implements ChatJobImplementationService {
 
         public void setUserContent(PromptInput content) {
             this.messages.clear();
-            messages.add(new Message("system", "You are a helpful assistant that can take one to multiple user input and combine them to one joke "));
+            messages.add(new Message("system", "You are a helpful assistant that can take two user inputs and make a motivated job application"));
+            //messages.add(new Message("system", "You are a helpful assistant that can take one to multiple user input and combine them to one joke "));
             messages.add(new Message("user", content.getResume()));
             messages.add(new Message("user", content.getJobAdd()));
             System.out.println(messages);

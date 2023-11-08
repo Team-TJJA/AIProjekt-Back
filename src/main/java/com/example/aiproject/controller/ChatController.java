@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin
 public class ChatController {
      private ChatJobImplementationService chatService;
 
@@ -32,5 +33,4 @@ public class ChatController {
         chatService.setUserContent(content);
         return chatService.chatApplicationResponse();
     }
-
 }
