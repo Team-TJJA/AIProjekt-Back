@@ -4,6 +4,7 @@ import com.example.aiproject.dto.ChatRequest;
 import com.example.aiproject.dto.ChatResponse;
 import com.example.aiproject.dto.Message;
 import com.example.aiproject.entity.ChatApplicationResponse;
+import com.example.aiproject.entity.PromptInput;
 import com.example.aiproject.repository.ChatRepository;
 import com.example.aiproject.service.ChatJobImplementationService;
 import org.springframework.http.MediaType;
@@ -32,10 +33,12 @@ public class ChatJobImplementation implements ChatJobImplementationService {
             this.chatRepository = chatRepository;
         }
 
-        public void setUserContent(List<String> userContent) {
+        public void setUserContent(PromptInput content) {
             this.messages.clear();
             messages.add(new Message("system", "You are a helpful assistant that can take one to multiple user input and combine them to one joke "));
-            userContent.forEach(content -> messages.add(new Message("user", content)));
+            messages.add(new Message("user", content.getResume()));
+            messages.add(new Message("user", content.getJobAdd()));
+            System.out.println(messages);
         }
 
         public ChatRequest setupChatRequest() {
