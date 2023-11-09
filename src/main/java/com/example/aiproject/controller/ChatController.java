@@ -23,14 +23,16 @@ public class ChatController {
      }
 
     @GetMapping("/fullresponse")
-    public Mono<ChatResponse> getFullResponse(){
+    public ChatResponse getFullResponse(){
         return chatService.fetchChatResponse();
     }
 
 
     @PostMapping("/chatresponse")
-    public Mono<ChatApplicationResponse> getChatResponseFromList(@RequestBody PromptInput content){
+    public ChatApplicationResponse getChatResponseFromList(@RequestBody PromptInput content){
         chatService.setUserContent(content);
+        ChatApplicationResponse x = chatService.chatApplicationResponse();
+        System.out.println(x);
         return chatService.chatApplicationResponse();
     }
 }

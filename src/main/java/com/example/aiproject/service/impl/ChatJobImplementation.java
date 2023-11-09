@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +20,8 @@ import java.util.List;
 public class ChatJobImplementation implements ChatJobImplementationService {
         private final String model = "gpt-3.5-turbo";
         private final double temperature = 1;
-        private final int maxTokens = 500;
-        private final double topP = 1.0;
+        private final int maxTokens = 1500;
+        private final double topP = 0.8;
         private final double frequencyPenalty= 0.0;
         private final double presencePenalty= 0.0;
 
@@ -35,7 +36,8 @@ public class ChatJobImplementation implements ChatJobImplementationService {
 
         public void setUserContent(PromptInput content) {
             this.messages.clear();
-            messages.add(new Message("system", "You are a helpful assistant that can take two user inputs and make a motivated job application"));
+            messages.add(new Message("system", "You are a helpful assistant that can take two user inputs and make a motivated job application written in the language of the job add"));
+            //messages.add(new Message("system", "You are a helpful assistant that can take two user inputs and make a motivated job application"));
             //messages.add(new Message("system", "You are a helpful assistant that can take one to multiple user input and combine them to one joke "));
             messages.add(new Message("user", content.getResume()));
             messages.add(new Message("user", content.getJobAdd()));
@@ -55,7 +57,7 @@ public class ChatJobImplementation implements ChatJobImplementationService {
             return chatRequest;
         }
 
-        public Mono<ChatResponse> fetchChatResponse() {
+        public ChatResponse fetchChatResponse() {
             ChatRequest chatRequest = setupChatRequest();
             return webClient
                     .post()
@@ -63,21 +65,20 @@ public class ChatJobImplementation implements ChatJobImplementationService {
                     .accept(MediaType.APPLICATION_JSON)
                     .bodyValue(chatRequest)
                     .retrieve()
-                    .bodyToMono(ChatResponse.class);
+                    .bodyToMono(ChatResponse.class).block();
         }
 
-        public Mono<ChatApplicationResponse> chatApplicationResponse() {
-            return fetchChatResponse().map(response -> {
-                ChatApplicationResponse chatApplication = new ChatApplicationResponse();
-                chatApplication.setAnswer(response.getChoices().get(0).getMessage().getContent());
-                chatApplication.setPromptTokens(response.getUsage().getPromptTokens());
-                chatApplication.setCompletionTokens(response.getUsage().getCompletionTokens());
-                chatApplication.setTotalTokens(response.getUsage().getTotalTokens());
+        public ChatApplicationResponse chatApplicationResponse() {
+           ChatResponse data = fetchChatResponse();
+           ChatApplicationResponse response = new ChatApplicationResponse();
+           response.setAnswer(data.getChoices().get(0).getMessage().getContent());
+           response.setPromptTokens(data.getUsage().getPromptTokens());
+           response.setCompletionTokens(data.getUsage().getCompletionTokens());
+           response.setTotalTokens(data.getUsage().getTotalTokens());
 
-                persistData(chatApplication);
+           persistData(response);
 
-                return chatApplication;
-            });
+           return response;
         }
 
 
