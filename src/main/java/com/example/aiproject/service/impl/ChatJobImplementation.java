@@ -10,9 +10,7 @@ import com.example.aiproject.service.ChatJobImplementationService;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +35,6 @@ public class ChatJobImplementation implements ChatJobImplementationService {
         public void setUserContent(PromptInput content) {
             this.messages.clear();
             messages.add(new Message("system", "You are a helpful assistant that can take two user inputs and make a motivated job application written in the language of the job add"));
-            //messages.add(new Message("system", "You are a helpful assistant that can take two user inputs and make a motivated job application"));
-            //messages.add(new Message("system", "You are a helpful assistant that can take one to multiple user input and combine them to one joke "));
             messages.add(new Message("user", content.getResume()));
             messages.add(new Message("user", content.getJobAdd()));
             System.out.println(messages);

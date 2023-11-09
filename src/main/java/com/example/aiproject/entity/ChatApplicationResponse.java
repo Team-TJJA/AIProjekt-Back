@@ -5,12 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
 @Entity
-@ToString
 @Table(name="chat_application_responses")
 public class ChatApplicationResponse {
     @Id @GeneratedValue(strategy = GenerationType.AUTO) @JsonIgnore
