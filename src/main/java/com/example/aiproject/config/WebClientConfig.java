@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class WebClientConfig {
+    //Insert "Bearer + API key" as environmetal variable.
     @Value("${chatGBT-key}")
     private String API_KEY;
 
